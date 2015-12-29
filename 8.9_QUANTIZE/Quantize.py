@@ -8,7 +8,7 @@ def quantize(s, groupNum):
 
     global cache,qCache, numOfList
     n = numOfList-s-groupNum+1
-    #print('--', s,n,groupNum)
+    #print('--', s,groupNum,n)
 
     minValue = sys.maxint
 
@@ -18,24 +18,25 @@ def quantize(s, groupNum):
         #print(cache[s][n-1])
         return cache[s][n-1]
 
-    if qCache[s][groupNum] == -1 :
+    if qCache[s][groupNum-1] == -1 :
     #if True:
-        for i in xrange(1,n):
+        for i in xrange(1,n+1):
 
             #print('i=',i,'b minValue :' , minValue)
-            '''
+
             if cache[s][i-1] < minValue:
-                minValue  = min(minValue, cache[s][i-1] + quantize(s+i,n-i,groupNum-1))
+                minValue  = min(minValue, cache[s][i-1] + quantize(s+i,groupNum-1))
             '''
             minValue  = min(minValue, cache[s][i-1] + quantize(s+i,groupNum-1))
+            '''
         #'''
         #if qCache[s][groupNum] != -1 and qCache[s][groupNum] != minValue:
         #    print(s,n,qCache[s][n],minValue)
         #'''
         #print(s,n,qCache[s][groupNum],minValue)
-        qCache[s][groupNum] = minValue;
+        qCache[s][groupNum-1] = minValue;
 
-    return qCache[s][groupNum]
+    return qCache[s][groupNum-1]
 
         #print('a minValue :' , minValue)
     #print(s,n,groupNum,minValue)
@@ -49,6 +50,9 @@ def quantizeStr(nStr,dataStr):
     numList = map(int, nStr.split())
     n = numList[0]
     groupNum = numList[1]
+    if groupNum >= n :
+        return 0
+
     dataList = map(int,dataStr.split())
 
     dataList.sort()
@@ -84,7 +88,7 @@ def quantizeStr(nStr,dataStr):
 
     #print(cache)
 
-    qCache = [[-1]*(n+1) for _ in xrange(n+1)]
+    qCache = [[-1]*(groupNum) for _ in xrange(n)]
 
 
     #print("----%s seconds ----"%(time.time()-start))
@@ -106,19 +110,20 @@ if __name__ == '__main__':
 
     '''
 
-    print(quantizeStr('10 3','3 3 3 1 2 3 2 2 2 1'))
-    print(quantizeStr('9 3','1 744 755 4 897 902 890 6 777'))
+    #print(quantizeStr('10 3','3 3 3 1 2 3 2 2 2 1'))
+    #print(quantizeStr('9 3','1 744 755 4 897 902 890 6 777'))
 
     import time
 
     global start
     start = time.time()
-    for i in xrange(1):
-        #print(quantizeStr('40 20','1 744 755 4 897 902 890 6 777 2 775 776 5 877 999 892 8 7888 7 999 1 744 755 4 897 902 890 6 777 2 775 776 5 877 999 892 8 7888 7 999'))
+    for i in xrange(10):
+        print(quantizeStr('100 20','1 744 755 4 897 902 890 6 777 2 775 776 5 877 999 892 8 7888 7 989 1 744 755 4 897 902 890 6 777 2 775 776 5 837 999 892 8 7888 7 999 777 2 775 776 5 877 999 892 8 7888 1 744 755 4 897 902 890 6 777 2 775 776 5 877 999 892 8 7888 7 989 1 744 755 4 897 902 890 6 777 2 775 776 5 837 999 892 8 7888 7 999 777 2 775 776 5 877 999 892 8 7888'))
         print(quantizeStr('20 9','1 744 755 4 897 902 890 6 777 300 27 53 441 7 88 93 63 22 873 92'))
-        #print(quantizeStr('6 4','1 2 3 4 8 9'))
+        print(quantizeStr('7 3','1 2 3 4 8 9 10'))
     print("----%s seconds ----"%(time.time()-start))
 
     # 20 : 3.36 -> 200: 3.4   10.9
     # 10 179058 , 56
+    # 1 sec
     '''
